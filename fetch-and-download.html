@@ -3,8 +3,56 @@
 <head>
   <meta charset="UTF-8" />
   <title>Download Merged CSV</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 30px;
+      color: #666;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #downloadBtn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #downloadBtn:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    #downloadBtn:active {
+      background-color: #3e8e41;
+    }
+  </style>
 </head>
 <body>
+  <h2>Download Merged Data</h2>
+  <p>This will fetch multiple CSV files from the server, merge them into one, and download it to your computer.</p>
   <button id="downloadBtn">Download Merged CSV</button>
 
   <script>
@@ -16,14 +64,12 @@
         const data = await response.json();
         if (!Array.isArray(data) || data.length === 0) throw new Error("No CSV data found.");
 
-        // Convert array of objects to CSV string
         const keys = Object.keys(data[0]);
         const csv = [
-          keys.join(","), // header row
+          keys.join(","),
           ...data.map(row => keys.map(k => JSON.stringify(row[k] ?? "")).join(","))
         ].join("\n");
 
-        // Trigger file download
         const blob = new Blob([csv], { type: "text/csv" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
