@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fetch CSV from S3</title>
+</head>
+<body>
+  <h1>Fetch CSV via Vercel</h1>
+
+  <input type="text" id="fetchKey" placeholder="Enter filename (e.g., data_1.csv)">
+  <button onclick="fetchCSV()">Fetch</button>
+
+  <pre id="output"></pre>
+
+  <script>
+    async function fetchCSV() {
+      const fileKey = document.getElementById("fetchKey").value.trim() || "runsheet.csv";
+      const output = document.getElementById("output");
+
+      try {
+        const response = await fetch(`https://srnpro.vercel.app/api/fetch-runsheet?key=${encodeURIComponent(fileKey)}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          output.textContent = JSON.stringify(data, null, 2);
+        } else {
+          output.textContent = `❌ Failed to fetch: ${data.error}`;
+          console.error(data);
+        }
+      } catch (err) {
+        output.textContent = `❌ Error: ${err.message}`;
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
